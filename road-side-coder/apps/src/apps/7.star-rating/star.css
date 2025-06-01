@@ -1,0 +1,16 @@
+.star-container{
+    display: flex;
+}
+.star{
+    color: rgb(216, 237, 237);
+}
+
+
+.star.hover{
+    color: rgb(149, 255, 0);
+}
+
+
+.star.active{
+    color: rgb(0, 255, 106);
+}
