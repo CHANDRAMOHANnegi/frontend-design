@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Reverse a String",
+    "description": "Write a function to reverse a given string.",
+    "defaultSolution": "function reverseString(str) {\n  return str.split('').reverse().join('');\n}",
+    "testInput": "reverseString('example')",
+    "notes": "This question tests basic string manipulation."
+  },
+  {
+    "id": 2,
+    "title": "Find Max",
+    "description": "Write a function to find the maximum in an array.",
+    "defaultSolution": "function findMax(arr) {\n  return Math.max(...arr);\n}",
+    "testInput": "findMax([1, 2, 3])",
+    "notes": "Focus on understanding how to use the spread operator and Math.max."
+  },
+  {
+    "id": 3,
+    "title": "Check Palindrome",
+    "description": "Write a function to check if a string is a palindrome.",
+    "defaultSolution": "function isPalindrome(str) {\n  const reversed = str.split('').reverse().join('');\n  return str === reversed;\n}",
+    "testInput": "isPalindrome('radar')",
+    "notes": "Key learning here is reversing a string and comparison."
+  }
+]
