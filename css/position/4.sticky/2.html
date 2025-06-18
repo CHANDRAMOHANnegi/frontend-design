@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Relative to Scrollable Parent</title>
+    <style>
+        /* Scrollable parent container */
+        .scrollable-container {
+            position: relative;
+            /* Establish containing block */
+            height: 300px;
+            /* Limit height to enable scrolling */
+            width: 90%;
+            /* Full width */
+            overflow-y: scroll;
+            /* Enable vertical scrolling */
+            border: 2px solid black;
+            /* Border to visualize the container boundary */
+            padding: 10px;
+        }
+
+        /* Some tall content inside the container */
+        .content {
+            height: 1000px;
+            /* Tall content to require scrolling */
+            background-color: lightblue;
+        }
+
+        /* Sticky element inside the scrollable container */
+        .sticky-element {
+            position: sticky;
+            /*     Sticky positioning active */
+            top: 0;
+            /*       Stick to the top of the scrollable container */
+            padding: 10px;
+            background: yellow;
+            border: 2px solid orange;
+            z-index: 100;
+            /* Ensure it stays above other content */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sticky Element inside a Scrollable Container</h1>
+    <p>Scroll inside the black-bordered container to see the yellow box stick at the top.</p>
+
+    <div class="scrollable-container">
+        <div class="">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Beatae amet, neque, iure voluptatum
+            ipsam repellat tempora cumque labore cum exercitationem hic necessitatibus ullam veritatis recusandae odit
+            harum, quas eum? Ab.</div>
+        <div class="sticky-element">
+            I’m sticky! I will move with the scroll, but stop at the container’s boundary.
+        </div>
+        <div class="content">
+            This is tall content to enable scrolling inside the black-bordered container. Keep scrolling to observe the
+            sticky behavior.
+        </div>
+    </div>
+</body>
+
+</html>
