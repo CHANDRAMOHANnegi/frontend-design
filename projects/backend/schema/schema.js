@@ -1,171 +1,146 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-import rateLimit from "express-rate-limit";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 
-// Mongoose Schemas
-export const userSchema = {}
+// Schemas
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  name: { type: String, required: true },
+  avatar: String,
+  createdAt: { type: Date, default: Date.now },
+  lastLogin: Date,
+  preferences: {
+    theme: { type: String, default: "light" },
+    difficulty: { type: String, default: "all" },
+  },
+});
 
-// export const problemSchema = new mongoose.Schema(
-//   {
-//     title: { type: String, required: true },
-//     slug: { type: String, required: true, unique: true },
-//     difficulty: {
-//       type: String,
-//       required: true,
-//       enum: ["Easy", "Medium", "Hard"],
-//     },
-//     description: { type: String, required: true },
-//     examples: [
-//       {
-//         input: String,
-//         output: String,
-//         explanation: String,
-//       },
-//     ],
-//     defaultSolution: String,
-//     testCases: [
-//       {
-//         input: mongoose.Schema.Types.Mixed,
-//         expected: mongoose.Schema.Types.Mixed,
-//         hidden: { type: Boolean, default: false },
-//       },
-//     ],
-//     hints: [String],
-//     tags: [String],
-//     category: String,
-//     difficulty_rating: { type: Number, min: 1, max: 10 },
-//     acceptance_rate: { type: Number, default: 0 },
-//     total_submissions: { type: Number, default: 0 },
-//     accepted_submissions: { type: Number, default: 0 },
-//     created_by: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-//     is_premium: { type: Boolean, default: false },
-//     company_tags: [String],
-//   },
-//   { timestamps: true }
-// );
+const problemSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  difficulty: {
+    type: String,
+    enum: ["Easy", "Medium", "Hard"],
+    required: true,
+  },
+  description: { type: String, required: true },
+  examples: [
+    {
+      input: String,
+      output: String,
+    },
+  ],
+  defaultSolution: String,
+  testCases: [
+    {
+      input: String,
+      expected: mongoose.Schema.Types.Mixed,
+    },
+  ],
+  hints: [String],
+  notes: String,
+  tags: [String],
+  category: String,
+  createdAt: { type: Date, default: Date.now },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  submissions: { type: Number, default: 0 },
+  successRate: { type: Number, default: 0 },
+});
 
-// export const submissionSchema = new mongoose.Schema(
-//   {
-//     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-//     problem: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "Problem",
-//       required: true,
-//     },
-//     code: { type: String, required: true },
-//     language: { type: String, default: "javascript" },
-//     status: {
-//       type: String,
-//       enum: [
-//         "Accepted",
-//         "Wrong Answer",
-//         "Runtime Error",
-//         "Time Limit Exceeded",
-//       ],
-//       required: true,
-//     },
-//     runtime: Number,
-//     memory: Number,
-//     test_results: [
-//       {
-//         input: mongoose.Schema.Types.Mixed,
-//         expected: mongoose.Schema.Types.Mixed,
-//         actual: mongoose.Schema.Types.Mixed,
-//         passed: Boolean,
-//         runtime: Number,
-//       },
-//     ],
-//     submission_time: { type: Date, default: Date.now },
-//   },
-//   { timestamps: true }
-// );
+const submissionSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  problemId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Problem",
+    required: true,
+  },
+  code: { type: String, required: true },
+  language: { type: String, default: "javascript" },
+  status: { type: String, enum: ["passed", "failed", "error"], required: true },
+  testResults: [
+    {
+      input: String,
+      expected: mongoose.Schema.Types.Mixed,
+      actual: mongoose.Schema.Types.Mixed,
+      passed: Boolean,
+    },
+  ],
+  executionTime: Number,
+  submittedAt: { type: Date, default: Date.now },
+});
 
-// export const blogPostSchema = new mongoose.Schema(
-//   {
-//     title: { type: String, required: true },
-//     slug: { type: String, required: true, unique: true },
-//     excerpt: { type: String, required: true },
-//     content: { type: String, required: true },
-//     author: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//       required: true,
-//     },
-//     topic: { type: mongoose.Schema.Types.ObjectId, ref: "BlogTopic" },
-//     tags: [String],
-//     read_time: String,
-//     published: { type: Boolean, default: false },
-//     featured: { type: Boolean, default: false },
-//     views: { type: Number, default: 0 },
-//     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-//     meta: {
-//       title: String,
-//       description: String,
-//       keywords: [String],
-//     },
-//   },
-//   { timestamps: true }
-// );
+const blogTopicSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: String,
+  color: String,
+  createdAt: { type: Date, default: Date.now },
+});
 
-// export const blogTopicSchema = new mongoose.Schema(
-//   {
-//     name: { type: String, required: true, unique: true },
-//     slug: { type: String, required: true, unique: true },
-//     description: String,
-//     color: String,
-//     icon: String,
-//     order: { type: Number, default: 0 },
-//   },
-//   { timestamps: true }
-// );
+const blogPostSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  excerpt: String,
+  content: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  topicId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BlogTopic",
+    required: true,
+  },
+  tags: [String],
+  readTime: String,
+  published: { type: Boolean, default: false },
+  publishedAt: Date,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
+});
 
-// export const noteSchema = new mongoose.Schema(
-//   {
-//     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-//     category: { type: String, required: true },
-//     title: String,
-//     content: { type: String, default: "" },
-//     tags: [String],
-//     is_favorite: { type: Boolean, default: false },
-//     folder: String,
-//   },
-//   { timestamps: true }
-// );
+const noteCategorySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: String,
+  color: String,
+  icon: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  createdAt: { type: Date, default: Date.now },
+});
 
-// export const progressSchema = new mongoose.Schema(
-//   {
-//     user: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//       required: true,
-//       unique: true,
-//     },
-//     completed_problems: [
-//       { type: mongoose.Schema.Types.ObjectId, ref: "Problem" },
-//     ],
-//     attempted_problems: [
-//       { type: mongoose.Schema.Types.ObjectId, ref: "Problem" },
-//     ],
-//     streak_count: { type: Number, default: 0 },
-//     last_activity: { type: Date, default: Date.now },
-//     total_submissions: { type: Number, default: 0 },
-//     accepted_submissions: { type: Number, default: 0 },
-//     stats: {
-//       easy_solved: { type: Number, default: 0 },
-//       medium_solved: { type: Number, default: 0 },
-//       hard_solved: { type: Number, default: 0 },
-//     },
-//     badges: [
-//       {
-//         name: String,
-//         description: String,
-//         earned_at: { type: Date, default: Date.now },
-//       },
-//     ],
-//   },
-//   { timestamps: true }
-// );
+const noteSchema = new mongoose.Schema({
+  title: String,
+  content: { type: String, required: true },
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "NoteCategory",
+    required: true,
+  },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  tags: [String],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const progressSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  problemId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Problem",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["not-started", "in-progress", "completed"],
+    default: "not-started",
+  },
+  attempts: { type: Number, default: 0 },
+  bestSubmission: { type: mongoose.Schema.Types.ObjectId, ref: "Submission" },
+  lastAttempt: Date,
+  timeSpent: { type: Number, default: 0 }, // in minutes
+});
+
+// Models
+export const User = mongoose.model("User", userSchema);
+export const Problem = mongoose.model("Problem", problemSchema);
+export const Submission = mongoose.model("Submission", submissionSchema);
+export const BlogTopic = mongoose.model("BlogTopic", blogTopicSchema);
+export const BlogPost = mongoose.model("BlogPost", blogPostSchema);
+export const NoteCategory = mongoose.model("NoteCategory", noteCategorySchema);
+export const Note = mongoose.model("Note", noteSchema);
+export const Progress = mongoose.model("Progress", progressSchema);
