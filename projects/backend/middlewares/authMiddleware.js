@@ -7,8 +7,9 @@ export const authenticateToken = (req, res, next) => {
 
   // jwt.verify(token, JWT_SECRET, (err, user) => {
   //   if (err) return res.status(403).json({ error: "Invalid token" });
-  //   req.user = user;
+  //   req.user = "68554453f775dc2904e5ce8b"//user;
   //   next();
   // });
-    next();
+  req.user = "68554453f775dc2904e5ce8b"//user;
+  next();
 };

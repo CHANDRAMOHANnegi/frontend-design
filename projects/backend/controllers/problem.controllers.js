@@ -30,6 +30,8 @@ import { Problem } from "../schema/schema.js";
 };
 
  const getProblem = async (req, res) => {
+  console.log(req.params);
+  
   try {
     const problem = await Problem.findById(req.params.id).populate(
       "author",

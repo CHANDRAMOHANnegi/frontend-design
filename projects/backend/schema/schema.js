@@ -35,6 +35,7 @@ const problemSchema = new mongoose.Schema({
       expected: mongoose.Schema.Types.Mixed,
     },
   ],
+  pattern: [String],
   hints: [String],
   notes: String,
   tags: [String],
@@ -78,11 +79,11 @@ const blogPostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   excerpt: String,
   content: { type: String, required: true },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
   topicId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BlogTopic",
-    required: true,
+    required: false,
   },
   tags: [String],
   readTime: String,
@@ -99,7 +100,7 @@ const noteCategorySchema = new mongoose.Schema({
   description: String,
   color: String,
   icon: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -109,16 +110,16 @@ const noteSchema = new mongoose.Schema({
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "NoteCategory",
-    required: true,
+    required: false,
   },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
   tags: [String],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
 
 const progressSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
   problemId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Problem",

@@ -23,17 +23,20 @@ const addNotesCategories = async (req, res) => {
 };
 
 const getNotes = async (req, res) => {
-  console.log('=====',req);
-  
+  console.log('=====', req.query, req.user);
+
   try {
     const { categoryId } = req.query;
-    let query = { userId: req.user.userId };
+    let query = {};
+    if (req.user?.userId) {
+      query.userId = req.user.userId
+    }
 
     if (categoryId) {
       query.categoryId = categoryId;
     }
 
-    const notes = await Note.find(query)
+    const notes = await Note.find({})
       .populate("categoryId", "name color")
       .sort({ updatedAt: -1 });
 
