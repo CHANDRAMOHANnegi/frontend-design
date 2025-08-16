@@ -20,7 +20,9 @@ export default function ChatApp() {
     if (!username.trim()) return;
     
     setIsConnecting(true);
-    const websocket = new WebSocket(`ws://localhost:8080/ws?username=${encodeURIComponent(username)}`);
+    const websocket = new WebSocket(`wss://wonderful-transformation-production.up.railway.app/ws?username=${encodeURIComponent(username)}`);
+
+    // const websocket = new WebSocket(`ws://localhost:8080/ws?username=${encodeURIComponent(username)}`);
     
     websocket.onopen = () => {
       console.log('Connected to chat server');

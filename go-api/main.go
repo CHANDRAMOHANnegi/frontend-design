@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -152,27 +153,30 @@ func main() {
 	go hub.run()
 
 	router := mux.NewRouter()
-	
-	// WebSocket endpoint
+
 	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		handleWebSocket(hub, w, r)
 	})
 
-	// Health check endpoint
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}).Methods("GET")
 
-	// Setup CORS
+	// IMPORTANT: Allow all origins for production
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"}, // React dev server
+		AllowedOrigins: []string{"*"}, // This allows your React app to connect
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"*"},
 	})
 
 	handler := c.Handler(router)
 
-	log.Println("Chat server starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Chat server starting on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
