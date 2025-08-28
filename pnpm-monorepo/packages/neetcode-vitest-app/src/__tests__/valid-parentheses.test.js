@@ -1,0 +1,1 @@
+import { isValid } from '../solutions/valid-parentheses.js'\ndescribe('Valid Parentheses', () => {\n  it('case 1', () => {\n    expect(isValid("()")).toEqual(true)\n  })\n  it('case 2', () => {\n    expect(isValid("()[]{}")).toEqual(true)\n  })\n  it('case 3', () => {\n    expect(isValid("(]")).toEqual(false)\n  })\n})

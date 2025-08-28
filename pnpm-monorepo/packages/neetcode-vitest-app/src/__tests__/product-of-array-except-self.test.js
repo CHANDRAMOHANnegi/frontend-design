@@ -1,0 +1,1 @@
+import { productExceptSelf } from '../solutions/product-of-array-except-self.js'\ndescribe('Product of Array Except Self', () => {\n  it('case 1', () => {\n    expect(productExceptSelf([1, 2, 3, 4])).toEqual([24, 12, 8, 6])\n  })\n  it('case 2', () => {\n    expect(productExceptSelf([-1, 1, 0, -3, 3])).toEqual([0, 0, 9, 0, 0])\n  })\n})

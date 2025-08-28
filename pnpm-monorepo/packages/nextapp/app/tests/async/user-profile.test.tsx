@@ -1,15 +1,24 @@
 // wirte test for user pfrfile component
 import React, { useEffect, useState } from 'react';
-// import { fetchUserProfile } from '@/api/user'; // Assume this is the API call to fetch user profile
+import { fetchUserProfile } from '../api'; // Assume this is the API call to fetch user profile
 import { render, screen, waitFor } from '@testing-library/react';
 // import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UserProfile } from './user-profile'; // Adjust the import path as necessary
 import { userData } from '@/app/mocks/data';
+// ✅ Mock the API module
+// vi.mock('../api', () => ({
+//     fetchUserProfile: vi.fn()
+// }));
 
 describe('UserProfile Component', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it('should display loading when userId is provided', async () => {
         const userId = '1';
+        vi.fn().mockResolvedValue(fetchUserProfile).mockResolvedValue({});
         render(<UserProfile userId={userId} />);
 
         // Wait for the user profile to load
@@ -18,6 +27,8 @@ describe('UserProfile Component', () => {
 
     it('should display user profile when userId is provided', async () => {
         const user = userData['1']
+        vi.fn().mockResolvedValue(fetchUserProfile).mockResolvedValue(user);
+
         render(<UserProfile userId={user.id} />);
 
         // Wait for the user profile to load

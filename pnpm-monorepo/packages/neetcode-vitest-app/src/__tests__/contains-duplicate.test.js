@@ -1,0 +1,1 @@
+import { containsDuplicate } from '../solutions/contains-duplicate.js'\ndescribe('Contains Duplicate', () => {\n  it('case 1', () => {\n    expect(containsDuplicate([1, 2, 3, 1])).toEqual(true)\n  })\n  it('case 2', () => {\n    expect(containsDuplicate([1, 2, 3, 4])).toEqual(false)\n  })\n})

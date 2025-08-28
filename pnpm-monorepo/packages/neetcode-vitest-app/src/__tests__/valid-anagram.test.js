@@ -1,0 +1,1 @@
+import { isAnagram } from '../solutions/valid-anagram.js'\ndescribe('Valid Anagram', () => {\n  it('case 1', () => {\n    expect(isAnagram("anagram", "nagaram")).toEqual(true)\n  })\n  it('case 2', () => {\n    expect(isAnagram("rat", "car")).toEqual(false)\n  })\n})
